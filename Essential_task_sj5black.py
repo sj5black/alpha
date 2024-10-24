@@ -1,4 +1,8 @@
 import seaborn as sns
+import xgboost as xgb
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 titanic = sns.load_dataset('titanic')
 
@@ -30,9 +34,6 @@ print(titanic['family_size'].head())
 titanic = titanic[['survived', 'pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'embarked', 'family_size']]
 X = titanic.drop('survived', axis=1) # feature
 y = titanic['survived'] # target
-
-import xgboost as xgb
-from sklearn.metrics import mean_squared_error
 
 # 데이터 분할
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
