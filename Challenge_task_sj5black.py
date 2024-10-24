@@ -29,8 +29,6 @@ plt.ylabel('Count')
 plt.title('Distribution of Scores')
 plt.show()
 
-
-
 # 데이터셋 클래스 정의
 class ReviewDataset(Dataset):
     def __init__(self, reviews, ratings, text_pipeline, label_pipeline):
