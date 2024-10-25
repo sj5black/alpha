@@ -1,33 +1,5 @@
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import numpy as np
-from torch.utils.data import DataLoader, Dataset
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from torchtext.data.utils import get_tokenizer
-from torchtext.vocab import build_vocab_from_iterator
 
-df = pd.read_csv("netflix_reviews.csv")  # 파일 불러오기
 
-# 전처리 함수
-def preprocess_text(text):
-    if isinstance(text, float):
-        return ""
-    text = text.lower()  # 대문자를 소문자로
-    text = re.sub(r'[^\w\s]', '', text)  # 구두점 제거
-    text = re.sub(r'\d+', '', text)  # 숫자 제거
-    text = text.strip()  # 띄어쓰기 제외하고 빈 칸 제거
-    return text
-
-sns.barplot(x=리뷰컬럼, y=리뷰갯수)
-plt.xlabel('Score')
-plt.ylabel('Count')
-plt.title('Distribution of Scores')
-plt.show()
 
 # 데이터셋 클래스 정의
 class ReviewDataset(Dataset):
