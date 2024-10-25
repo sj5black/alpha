@@ -1,25 +1,30 @@
 #1 데이터셋 불러오기. seaborn 라이브러리에 있는 titanic 데이터 불러오기
 import seaborn as sns
-import pandas as pd
-import numpy as np
 
 titanic = sns.load_dataset('titanic')
 
 
 
 #2-1 feature 분석. head 함수를 이용해 데이터의 feature를 파악
-titanic.head()
+print(titanic.head())
 
 
 
 #2-2 feature 분석. describe 함수를 통해 기본적인 통계 확인
-titanic.describe()
+print(titanic.describe())
 
 
 
 #2-3 feature 분석. isnull() 함수와 sum() 함수를 이용해 각 열의 결측치 갯수 확인
-#describe 함수를 통해 확인할 수 있는 count, std, min, 25%, 50%, 70%, max 가 각각 무슨 뜻인지
+#describe 함수를 통해 확인할 수 있는 count, std, min, 25%, 50%, 75%, max 가 각각 무슨 뜻인지
 
+    #count: 총 갯수
+    # std:평균
+    # min:최솟값
+    # 25%:4분위 수를 기준으로 25% 에 해당되는 값
+    # 50%:분위 수를 기준으로 50% 에 해당되는 값
+    # 75%:분위 수를 기준으로 75% 에 해당되는 값
+    # max: 최댓값
 
 
 #2-4 feature 분석. isnull() 함수와 sum() 함수를 이용해 각 열의 결측치 갯수 확인
@@ -37,9 +42,9 @@ print(titanic['embarked'].isnull().sum())
 
 
 #3-2 수치형으로 인코딩. Sex(성별)는 남자:0, 여자:1. Embarked(승선 항구) ‘C’는 0, Q는 1, ‘S’는 2. 결과를 head 함수를 이용해 확인
-titanic['sex'] = titanic['sex'].map({'male': 0, 'female': 1})
-titanic['alive'] = titanic['alive'].map({'yes': 1, 'no': 0})
-titanic['embarked'] = titanic['embarked'].map({'C': 0, 'Q': 1, 'S': 2,})
+titanic['sex'] = titanic['sex'].replace({'male': 0, 'female': 1})  # O
+titanic['alive'] = titanic['alive'].replace({'no': 1, 'yes': 0})  # O
+titanic['embarked'] = titanic['embarked'].replace({'C': 0, 'Q': 1, 'S': 2,})  # O
 
 print(titanic['sex'].head())
 print(titanic['alive'].head())
@@ -55,6 +60,20 @@ print(titanic['family_size'].head())
 
 
 #4-1 모델 학습 준비
+import pandas as pd
+import numpy as np
+
+import sklearn                                          #파이썬 머신러닝 분석
+import matplotlib.pyplot as plt                         #데이터 시각화
+
+from sklearn.model_selection import train_test_split    #데이터 분할
+from sklearn.preprocessing import StandardScaler        #데이터 칼럼 표준화
+from sklearn.linear_model import LogisticRegression     #로지스틱 회귀
+from sklearn.metrics import accuracy_score              #성능 평가 지표
+from sklearn.metrics import classification_report       #평가 지표
+
+
+
 titanic = titanic[['survived', 'pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'embarked', 'family_size']]
 X = titanic.drop('survived', axis=1) # feature
 y = titanic['survived'] # target
