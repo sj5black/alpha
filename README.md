@@ -1,4 +1,4 @@
-#1 데이터셋 불러오기
+```#1 데이터셋 불러오기
 import pandas as pd
 
 df = pd.read_csv("/Users/ur/Desktop/AI부트캠프/02 13조/netflix_reviews.csv")
@@ -45,3 +45,4 @@ plt.show()
 
 
 # ?????????
+```
