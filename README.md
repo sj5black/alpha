@@ -25,6 +25,15 @@ https://www.kaggle.com/datasets/ashishkumarak/netflix-reviews-playstore-daily-up
 데이터셋과 로더를 활용해 모델에 학습시킬 데이터 정의.  
 LSTM 모델 정의한 뒤 파라미터로 모델을 초기화.  
 
+    단계 요약 :  
+    - 텍스트 데이터를 임베딩 레이어로 벡터화.  
+    - LSTM 레이어로 단어 순서와 관계를 학습.  
+    - 양방향이면 마지막 순방향, 역방향 은닉 상태 결합해 ㅊ최종 은닉 상태로 사용.  
+    - fully connected(선형) 레이어를 통해 최종 은닉 상태를 출력값으로 변환.  
+
 5. 손실 함수 및 옵티마이저 정의한 후 모델 학습 및 평가
+
+    - 모델 학습 및 평가에는 train(), evaluate() 정의.
+    - MSE와 정확도 도출.
 
 6. 평가 후 새로운 리뷰 등록 후 예측.
