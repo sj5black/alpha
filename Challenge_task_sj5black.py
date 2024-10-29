@@ -26,9 +26,6 @@ def preprocess_text(text):
 
 # content 컬럼에 전처리 함수 적용
 df['content'] = df['content'].apply(preprocess_text)
-df['content'].head()
-
-import seaborn as sns
 
 # 필요한 열 선택 및 결측값 처리
 # df_ML = df[['content', 'score']].dropna().reset_index(drop=True)
@@ -38,8 +35,8 @@ import torch.nn.utils.rnn as rnn_utils
 # 데이터셋 클래스 정의
 class ReviewDataset(Dataset):
     def __init__(self, reviews, ratings, text_pipeline, label_pipeline):
-        self.reviews = reviews.reset_index(drop=True)
-        self.ratings = ratings.reset_index(drop=True)
+        self.reviews = reviews
+        self.ratings = ratings
         self.text_pipeline = text_pipeline
         self.label_pipeline = label_pipeline
 
@@ -47,14 +44,9 @@ class ReviewDataset(Dataset):
         return len(self.reviews)
 
     def __getitem__(self, idx):
-        review = self.text_pipeline(self.reviews.iloc[idx])
-        rating = self.label_pipeline(self.ratings.iloc[idx])
-
-        # clone().detach()를 사용하여 텐서 생성
-        review_tensor = torch.tensor(review).clone().detach()
-        rating_tensor = torch.tensor(rating).clone().detach()  # 레이블은 requires_grad를 설정하지 않음
-    
-        return review_tensor, rating_tensor
+        review = self.text_pipeline(self.reviews[idx])
+        rating = self.label_pipeline(self.ratings[idx])
+        return torch.tensor(review), torch.tensor(rating)
 
 # 특성과 타겟 분리
 X = df['content']
@@ -78,19 +70,11 @@ vocab.set_default_index(vocab["<unk>"])  # 기본 인덱스를 <unk>로 설정
 def text_pipeline(text):
     return torch.tensor([vocab[token] for token in tokenizer(text)])
 
-# 패딩을 적용하기 위한 커스텀 collate_fn 정의
-def collate_fn(batch):
-    reviews, ratings = zip(*batch)
-    reviews_padded = rnn_utils.pad_sequence(reviews, batch_first=True, padding_value=vocab["<unk>"]).long()
-    ratings = torch.tensor(ratings, dtype=torch.long)
-    return reviews_padded, ratings
-
 # 레이블 파이프라인 정의
 label_encoder = LabelEncoder()
 label_encoder.fit(df['score'].unique())  # 예시 레이블
 def label_pipeline(label):
     return label_encoder.transform([label])[0]
-
 
 # 데이터 로더 정의
 BATCH_SIZE = 64
@@ -98,8 +82,8 @@ BATCH_SIZE = 64
 # 데이터셋 정의
 train_dataset = ReviewDataset(train_reviews, train_ratings, text_pipeline, label_pipeline)
 test_dataset = ReviewDataset(test_reviews, test_ratings, text_pipeline, label_pipeline)
-train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, collate_fn=collate_fn)
-test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, collate_fn=collate_fn)
+train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+test_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 # LSTM 모델 정의
 class LSTMModel(nn.Module):
